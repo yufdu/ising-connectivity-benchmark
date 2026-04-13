@@ -10,7 +10,9 @@ This exercise investigates the heavy-hex connectivity cost for simulating a gene
 
 Long-range Ising Hamiltonian (this version: 1D chain with N = 6 spins):
 
-$$H = \sum_{i<j} J_{ij} Z_i Z_j  +  h \sum_i X_i$$
+$$  
+H = \sum_{i<j} J_{ij}\, Z_i Z_j + h \sum_{i} X_i  
+$$
 
 where $J_{ij} = 1/|i−j|^\alpha$  is a power-law coupling, truncated at a tunable cutoff (set to 1% of max).
 
@@ -34,9 +36,9 @@ Observable: average magnetization $M_z = (1/N) \sum_i \langle Z_i\rangle$
 This code intends to support both `"chain"` (1D) and `"honeycomb"` (hexagonal lattice) geometries, controlled by a single `geometry` parameter. To switch, set `GEOMETRY = "honeycomb"`.
 
 Acceptable number of qubit is determined by the honeycomb structure:
-N_QUBITS=6  -> hex_lattice(1,1): one hexagonal ring
-N_QUBITS=10 -> hex_lattice(1,2) or (2,1): two fused hexagons
-N_QUBITS=16 -> hex_lattice(2,2): four fused hexagons
+- N_QUBITS=6  -> hex_lattice(1,1): one hexagonal ring
+- N_QUBITS=10 -> hex_lattice(1,2) or (2,1): two fused hexagons
+- N_QUBITS=16 -> hex_lattice(2,2): four fused hexagons
 etc. 
 
 **WARNING: not fully implemented in this version.**
