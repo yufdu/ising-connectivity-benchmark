@@ -8,13 +8,7 @@ This exercise investigates the heavy-hex connectivity cost for simulating a gene
 
 ## Model
 
-Long-range Ising Hamiltonian (this version: 1D chain with N = 6 spins):
-
-$ 
-H = \sum_{i<j} J_{ij} \, Z_i Z_j + h \sum_{i} X_i  
-$
-
-where $J_{ij} = 1/|i−j|^\alpha$  is a power-law coupling, truncated at a tunable cutoff (set to 1% of max).
+Long-range Ising Hamiltonian (this version: 1D chain with N = 6 spins): $ H = \sum_{i<j} J_{ij} \, Z_i Z_j + h \sum_{i} X_i $, where $J_{ij} = 1/|i−j|^\alpha$  is a power-law coupling, truncated at a tunable cutoff (set to 1% of max).
 
 - Large $\alpha$: short range interaction (only nearest-neighbor pairs survive, trivial on heavy-hex)
 - Small $\alpha$: long range interaction (has long-range pairs, high connectivity demand)
