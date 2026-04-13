@@ -30,21 +30,19 @@ Run your connectivity-tax benchmark circuits on real IBM quantum hardware.
 ```bash
 python 00_test_local.py
 ```
-Runs the full pipeline on a simulated fake backend (FakeSherbrooke). Verifies that transpilation, execution, and result parsing all work for both unitary and dynamic circuits. Expect noisy results — the fake backend includes realistic noise.
+Verifies that transpilation, execution, and result parsing all work for both unitary and dynamic circuits. 
 
 ### Step 1a: Submit unitary circuits
 ```bash
 python 01a_submit_unitary.py
 ```
-Transpiles ideal Trotter circuits with SWAP routing and submits them. Saves job IDs to `jobs/jobs_unitary_YYYYMMDD_HHMMSS.json`.
+Transpiles ideal Trotter circuits with SWAP routing and submits them. Saves job IDs to `jobs/jobs_unitary_YYYYMMDD_HHMMSS.json`. 
 
 ### Step 1b: Submit dynamic circuits
 ```bash
 python 01b_submit_dynamic.py
 ```
-Builds dynamic circuits directly on the backend's physical topology and submits them. Validates that the backend supports control-flow (`if_else`) before proceeding — any transpilation failure is **fatal**, not silently skipped.
-
-Saves job IDs to `jobs/jobs_dynamic_YYYYMMDD_HHMMSS.json`.
+Builds dynamic circuits directly on the backend's physical topology and submits them. Saves job IDs to `jobs/jobs_dynamic_YYYYMMDD_HHMMSS.json`.
 
 The unitary and dynamic submissions are independent. You can run 1a now, iterate on the dynamic circuit design, and run 1b later without affecting the unitary results.
 
@@ -58,7 +56,7 @@ Saves results to `../results/hw_data/hw_results_{type}_{timestamp}.json`.
 
 ### Step 3: Analyze
 ```bash
-python 03_analyze.py
+python 03_analyze.ipynb
 ```
 Loads **all** result files in `results/hw_data/`, merges them, and produces comparison plots. Works whether you have just unitary results, just dynamic, or both. Runs entirely offline — no IBM account needed.
 
@@ -72,28 +70,34 @@ hardware/
 ├── 01a_submit_unitary.py     # Step 1a: submit unitary (SWAP-routed)
 ├── 01b_submit_dynamic.py     # Step 1b: submit dynamic (ancilla-assisted)
 ├── 02_retrieve.py            # Step 2: poll status + download results
-├── 03_analyze.py             # Step 3: compare with exact, make plots
+├── 03_analyze.ipynb          # Step 3: compare with exact, make plots
 ├── jobs/                     # auto-created: job ID records
-│   ├── jobs_unitary_20260412_143022.json
-│   └── jobs_dynamic_20260412_150511.json
+│   ├── jobs_unitary_xxxxxxxx_xxxxxx.json
+│   └── jobs_dynamic_xxxxxxxx_xxxxxx.json
 └── README.md                 # this file
 
 results/hw_data/              # auto-created: hardware measurement data
-    ├── hw_results_unitary_20260412_143022.json
-    └── hw_results_dynamic_20260412_150511.json
+    ├── hw_results_unitary_xxxxxxxx_xxxxxx.json
+    ├── hw_results_dynamic_xxxxxxxx_xxxxxx.json
+    └── hardware_results.png
 ```
 
-## Important: counts parsing
+## Circuit parameters and evolution time
 
-SamplerV2 stores each classical register as a separate attribute on the result object. Dynamic circuits have two classical registers: `mid` (ancilla measurements) and `meas` (final data-qubit measurements). The retrieval script reads `pub_result.data.meas` explicitly — it never falls back to arbitrary registers, which would risk silently reading the wrong register and producing meaningless Mz values.
+The hardware scripts use the following default settings:
 
-## Important: dynamic circuit requirements
+| Parameter     | Value                     | Description                              |
+| ------------- | ------------------------- | ---------------------------------------- |
+| `N_QUBITS`    | 6                         | Data qubits (1D chain geometry)          |
+| `N_STEPS`     | 1                         | Number of first-order Trotter steps      |
+| `THETA`       | $\pi/4$                   | Kick angle per Trotter step              |
+| `CUTOFF_FRAC` | 0.01                      | Keep coupling pairs with J ≥ 1% of J_max |
+| `SHOTS`       | 4000                      | Measurement shots per circuit            |
+| `ALPHAS`      | [0.5, 1.0, 2.0, 4.0, 8.0] | Power-law exponents scanned              |
 
-Dynamic circuits use Qiskit's `if_else` control-flow instruction. This requires:
+In this code, each Trotter step applies an X-kick $R_x(\theta)$ followed by ZZ interactions $R_{zz}(J_{ij})$. The kick relates to the continuous-time transverse field $h$ and time step $dt$ via $R_x(\theta) = e^{−i \theta X / 2} = e^{−i h dt X}$, so $\theta = 2 h dt$. With the defaults $\theta = \pi/4$ and $h = 1.0$, each step corresponds to $dt = \pi/8 ≈ 0.393$ in natural units. For `N_STEPS = 1`, the total evolution time is $T = dt = \pi/8$.
 
-1. **Backend support**: The backend's target must include `if_else`. The submission script checks this automatically and fails fast if the backend doesn't support it.
-
-2. **No fractional gates**: The Runtime release notes warn that fractional gates are incompatible with control-flow instructions. The submission script uses `optimization_level=1` which avoids this issue.
+To increase the evolution time (or number of Trotter steps), edit `N_STEPS` in the submit scripts. The simulation notebooks (01–04) sweep up to `MAX_STEPS = 8` to study how the connectivity tax scales with depth. Notebook 04 shows phase diagram where the 2Q depth exceeds typical coherence budgets.
 
 ## Job ID files
 
