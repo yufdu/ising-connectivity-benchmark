@@ -1,0 +1,76 @@
+{
+  "submitted_at": "20260412_194254",
+  "backend": "ibm_fez",
+  "circuit_type": "unitary",
+  "parameters": {
+    "n_qubits": 6,
+    "alphas": [
+      0.5,
+      1.0,
+      2.0,
+      4.0,
+      8.0
+    ],
+    "cutoff_frac": 0.01,
+    "theta": 0.7853981633974483,
+    "n_steps": 1,
+    "shots": 4000
+  },
+  "jobs": [
+    {
+      "job_id": "d7e5gaj0g7hs73dsk9m0",
+      "variant": "unitary",
+      "alpha": 0.5,
+      "n_qubits": 6,
+      "n_steps": 1,
+      "theta": 0.7853981633974483,
+      "cutoff_frac": 0.01,
+      "shots": 4000,
+      "backend": "ibm_fez"
+    },
+    {
+      "job_id": "d7e5gap5a5qc73dqi4vg",
+      "variant": "unitary",
+      "alpha": 1.0,
+      "n_qubits": 6,
+      "n_steps": 1,
+      "theta": 0.7853981633974483,
+      "cutoff_frac": 0.01,
+      "shots": 4000,
+      "backend": "ibm_fez"
+    },
+    {
+      "job_id": "d7e5gb30g7hs73dsk9n0",
+      "variant": "unitary",
+      "alpha": 2.0,
+      "n_qubits": 6,
+      "n_steps": 1,
+      "theta": 0.7853981633974483,
+      "cutoff_frac": 0.01,
+      "shots": 4000,
+      "backend": "ibm_fez"
+    },
+    {
+      "job_id": "d7e5gbbklj2c73f2c9mg",
+      "variant": "unitary",
+      "alpha": 4.0,
+      "n_qubits": 6,
+      "n_steps": 1,
+      "theta": 0.7853981633974483,
+      "cutoff_frac": 0.01,
+      "shots": 4000,
+      "backend": "ibm_fez"
+    },
+    {
+      "job_id": "d7e5gbm5nvhs73a6ca00",
+      "variant": "unitary",
+      "alpha": 8.0,
+      "n_qubits": 6,
+      "n_steps": 1,
+      "theta": 0.7853981633974483,
+      "cutoff_frac": 0.01,
+      "shots": 4000,
+      "backend": "ibm_fez"
+    }
+  ]
+}
